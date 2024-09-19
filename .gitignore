@@ -1,0 +1,3 @@
+# don't ignore target because having consistent data may be important
+# for collaboration within the teams
+__pycache__/
