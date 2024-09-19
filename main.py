@@ -109,6 +109,8 @@ def gen_departments():
 # generate employees which will be able to solve this problem by just generating a large number of them
 # in the future, this could be modified to ensure only a single solution, maybe no solution, etc.
 def gen_employees():
+    used_employee_names = set()
+
     employees = []
     for _ in range(100):
         employee_days = {}
@@ -118,7 +120,13 @@ def gen_employees():
             request_day_off = random.randint(1, 100) <= 25  # 25% chance of requesting day off on any given day
             employee_days[sprintDay] = EmployeeDay(available_shifts, preferred_shift, request_day_off)
 
-        employees.append(Employee(gen_sample_name(), random.choice(EmployeeType.list()), employee_days))
+        employee_name = gen_sample_name()
+        while employee_name in used_employee_names:
+            employee_name = gen_sample_name()
+
+        used_employee_names.add(employee_name)
+
+        employees.append(Employee(employee_name, random.choice(EmployeeType.list()), employee_days))
     return employees
 
 
