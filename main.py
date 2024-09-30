@@ -70,12 +70,20 @@ class Employee:
 
 
 # constraints do not specify num of departments, I'll do 5
+# these are just names for readability, they have no meaning in the main application
+# specific string department names creates no dependency
 class DepartmentType(Enum):
     CARDIOLOGY = "Cardiology"
     PEDIATRICS = "Pediatrics"
     EMERGENCY = "Emergency"
     SURGERY = "Surgery"
     IMMUNOLOGY = "Immunology"
+    DERMATOLOGY = "Dermatology"
+    NEUROLOGY = "Neurology"
+    PSYCHIATRY = "Psychiatry"
+    GYNECOLOGY = "Gynecology"
+    UROLOGY = "Urology"
+
 
     @classmethod
     def list(cls):
@@ -149,7 +157,7 @@ def write_employees(gen_number, employees):
 def write_departments(gen_number, departments):
     for department in departments.values():
         with open(
-            f"target/{gen_number}/{department.departmentType.value}.csv", mode="w", newline=""
+            f"target/{gen_number}/departments/{department.departmentType.value}.csv", mode="w", newline=""
         ) as department_file:
             department_writer = csv.writer(department_file, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL)
             department_writer.writerow(["Sprint Day", "Shift"] + [et.value for et in EmployeeType.list()])
@@ -175,6 +183,7 @@ def main():
             gen_number = max(gen_number, int(file.split(".")[0]) + 1)
 
     os.makedirs(f"target/{gen_number}", exist_ok=False)
+    os.makedirs(f"target/{gen_number}/departments", exist_ok=False)
 
     write_employees(gen_number, employees)
     write_departments(gen_number, departments)
