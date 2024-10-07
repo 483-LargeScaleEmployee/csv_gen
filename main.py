@@ -1,6 +1,7 @@
 import csv
 import os
 import random
+import sys
 from enum import Enum
 from typing import Dict, List
 
@@ -84,7 +85,6 @@ class DepartmentType(Enum):
     GYNECOLOGY = "Gynecology"
     UROLOGY = "Urology"
 
-
     @classmethod
     def list(cls):
         return list(cls)
@@ -138,18 +138,61 @@ def gen_employees():
     return employees
 
 
+# 0|Unavailable
+# 1|Available Shift 3
+# 2|Available Shift 2
+# 3|Available Shifts 2 & 3
+# 4|Available Shift 1
+# 5|Available Shifts 1 & 3
+# 6|Available Shifts 1 & 2
+# 7|Available Shifts 1 & 2 & 3
+# in this encoding, night is shift 1, morning is shift 2, evening is shift 3
+
+
+def encode_availability(employee_day: EmployeeDay) -> int:
+    if len(employee_day.available_shifts) == 3:
+        return 7
+    elif len(employee_day.available_shifts) == 2:
+        if not Shift.NIGHT in employee_day.available_shifts:
+            return 3
+        elif not Shift.MORNING in employee_day.available_shifts:
+            return 5
+        else:
+            return 6
+    elif len(employee_day.available_shifts) == 1:
+        if Shift.NIGHT in employee_day.available_shifts:
+            return 4
+        elif Shift.MORNING in employee_day.available_shifts:
+            return 2
+        else:
+            return 1
+    else:
+        return 0
+
+
 # first col is employee name, then employee type, then 14 sprint days
 def write_employees(gen_number, employees):
+    global readable_output_mode
+
     with open(f"target/{gen_number}/employees.csv", mode="w", newline="") as employee_file:
         employee_writer = csv.writer(employee_file, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL)
         employee_writer.writerow(["Name", "Type"] + [sprintDay.value for sprintDay in SprintDay.list()])
         for employee in employees:
             row = [employee.name, employee.employeeType.value]  # Use .value to get the string
-            for sprintDay in SprintDay.list():
-                employeeDay = employee.employee_days[sprintDay]
-                row.append(
-                    f"{[ed.value for ed in employeeDay.available_shifts]} {employeeDay.preferred_shift.value} {employeeDay.request_day_off}"
-                )
+
+            if readable_output_mode == 0:
+                for sprintDay in SprintDay.list():
+                    employeeDay = employee.employee_days[sprintDay]
+                    row.append(
+                        f"{encode_availability(employeeDay)} {employeeDay.preferred_shift.value} {employeeDay.request_day_off}"
+                    )
+            else:
+                for sprintDay in SprintDay.list():
+                    employeeDay = employee.employee_days[sprintDay]
+                    row.append(
+                        f"{[ed.value for ed in employeeDay.available_shifts]} {employeeDay.preferred_shift.value} {employeeDay.request_day_off}"
+                    )
+
             employee_writer.writerow(row)
 
 
@@ -178,9 +221,10 @@ def main():
     # saving the gen_number for better collaboration and testing
     # cur gen number is the highest num in target + 1
     gen_number = 0
-    for file in os.listdir("target"):
-        if file.endswith(".csv"):
-            gen_number = max(gen_number, int(file.split(".")[0]) + 1)
+    for direc in os.listdir("target"):
+        print(direc)
+        if os.path.isdir(f"target/{direc}"):
+            gen_number = max(gen_number, int(direc) + 1)
 
     os.makedirs(f"target/{gen_number}", exist_ok=False)
     os.makedirs(f"target/{gen_number}/departments", exist_ok=False)
@@ -189,5 +233,12 @@ def main():
     write_departments(gen_number, departments)
 
 
+readable_output_mode = 0
 if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Expected usage: python main.py <readable_output_mode>")
+        print("readable_output_mode: 0 for application input, 1 for human readable")
+        sys.exit(1)
+
+    readable_output_mode = int(sys.argv[1])
     main()
