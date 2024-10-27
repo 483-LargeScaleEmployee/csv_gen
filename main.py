@@ -34,9 +34,9 @@ class SprintDay(Enum):
 # night is 12am-8am, morning is 8am-4pm, evening is 4pm-12am
 # Night, Morning, Evening more readable in csv
 class Shift(Enum):
-    NIGHT = "Night"
-    MORNING = "Morning"
-    EVENING = "Evening"
+    NIGHT = "Night"  # Index 0
+    MORNING = "Morning"  # Index 1
+    EVENING = "Evening"  # Index 2
 
     @classmethod
     def list(cls):
@@ -138,36 +138,32 @@ def gen_employees():
     return employees
 
 
-# 0|Unavailable
-# 1|Available Shift 3
-# 2|Available Shift 2
-# 3|Available Shifts 2 & 3
-# 4|Available Shift 1
-# 5|Available Shifts 1 & 3
-# 6|Available Shifts 1 & 2
-# 7|Available Shifts 1 & 2 & 3
-# in this encoding, night is shift 1, morning is shift 2, evening is shift 3
+# dynamic to the number of shifts
+def encode_availability(employee_day: EmployeeDay) -> str:
+    # Create a binary string the length of all possible shifts
+    num_shifts = len(Shift.list())
+    shift_bits = ["0"] * num_shifts
+
+    # For each available shift, set its bit to 1 using the enum index
+    for shift in employee_day.available_shifts:
+        shift_index = Shift.list().index(shift)
+        shift_bits[shift_index] = "1"
+
+    # Join bits into string and return
+    return "".join(shift_bits)
 
 
-def encode_availability(employee_day: EmployeeDay) -> int:
-    if len(employee_day.available_shifts) == 3:
-        return 7
-    elif len(employee_day.available_shifts) == 2:
-        if not Shift.NIGHT in employee_day.available_shifts:
-            return 3
-        elif not Shift.MORNING in employee_day.available_shifts:
-            return 5
-        else:
-            return 6
-    elif len(employee_day.available_shifts) == 1:
-        if Shift.NIGHT in employee_day.available_shifts:
-            return 4
-        elif Shift.MORNING in employee_day.available_shifts:
-            return 2
-        else:
-            return 1
-    else:
-        return 0
+def encode_preference(employee_day: EmployeeDay) -> str:
+    # Create a binary string the length of all possible shifts
+    num_shifts = len(Shift.list())
+    shift_bits = ["0"] * num_shifts
+
+    # Set the preferred shift bit to 1 using the enum index
+    shift_index = Shift.list().index(employee_day.preferred_shift)
+    shift_bits[shift_index] = "1"
+
+    # Join bits into string and return
+    return "".join(shift_bits)
 
 
 # first col is employee name, then employee type, then 14 sprint days
@@ -183,9 +179,12 @@ def write_employees(gen_number, employees):
             if readable_output_mode == 0:
                 for sprintDay in SprintDay.list():
                     employeeDay = employee.employee_days[sprintDay]
-                    row.append(
-                        f"{encode_availability(employeeDay)} {employeeDay.preferred_shift.value} {employeeDay.request_day_off}"
-                    )
+                    if employeeDay.request_day_off:
+                        row.append("X")
+                    else:
+                        row.append(
+                            f"{encode_availability(employeeDay)} {encode_preference(employeeDay)}"
+                        )
             else:
                 for sprintDay in SprintDay.list():
                     employeeDay = employee.employee_days[sprintDay]
