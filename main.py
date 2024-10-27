@@ -212,6 +212,26 @@ def write_departments(gen_number, departments):
                     department_writer.writerow(row)
 
 
+# the C application assumes that there is a dynamic size of these, it is much simpler to directly read the
+# values instead of going line by line collecting all the unique values
+def write_metadata(gen_number):
+    with open(f"target/{gen_number}/metadata.csv", mode="w", newline="") as metadata_file:
+        metadata_writer = csv.writer(metadata_file, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        metadata_writer.writerow(["type", "name"])
+
+        for sprint_day in SprintDay.list():
+            metadata_writer.writerow(["sprint_day", sprint_day.value])
+
+        for shift in Shift.list():
+            metadata_writer.writerow(["shift", shift.value])
+
+        for emp_type in EmployeeType.list():
+            metadata_writer.writerow(["employee_type", emp_type.value])
+
+        for dep_type in DepartmentType.list():
+            metadata_writer.writerow(["department_type", dep_type.value])
+
+
 def main():
     departments = gen_departments()
     employees = gen_employees()
@@ -222,7 +242,6 @@ def main():
     # cur gen number is the highest num in target + 1
     gen_number = 0
     for direc in os.listdir("target"):
-        print(direc)
         if os.path.isdir(f"target/{direc}"):
             gen_number = max(gen_number, int(direc) + 1)
 
@@ -231,6 +250,7 @@ def main():
 
     write_employees(gen_number, employees)
     write_departments(gen_number, departments)
+    write_metadata(gen_number)
 
 
 readable_output_mode = 0
