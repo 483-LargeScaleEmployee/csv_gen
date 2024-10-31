@@ -108,7 +108,7 @@ def gen_departments():
                 for employeeType in EmployeeType.list():
                     # for any given day at any given shift, there are a certain # of department needs
                     # randomly generate this number as being 0-3 for each type
-                    needs[sprintDay][shift][employeeType] = random.randint(0, 3)
+                    needs[sprintDay][shift][employeeType] = random.randint(0, 1)
 
         departments[departmentType] = Department(departmentType, needs)
     return departments
@@ -116,11 +116,11 @@ def gen_departments():
 
 # generate employees which will be able to solve this problem by just generating a large number of them
 # in the future, this could be modified to ensure only a single solution, maybe no solution, etc.
-def gen_employees():
+def gen_employees(num_employees: int):
     used_employee_names = set()
 
     employees = []
-    for _ in range(100):
+    for _ in range(num_employees):
         employee_days = {}
         for sprintDay in SprintDay.list():
             available_shifts = random.sample(Shift.list(), random.randint(1, 3))
@@ -182,9 +182,7 @@ def write_employees(gen_number, employees):
                     if employeeDay.request_day_off:
                         row.append("X")
                     else:
-                        row.append(
-                            f"{encode_availability(employeeDay)} {encode_preference(employeeDay)}"
-                        )
+                        row.append(f"{encode_availability(employeeDay)} {encode_preference(employeeDay)}")
             else:
                 for sprintDay in SprintDay.list():
                     employeeDay = employee.employee_days[sprintDay]
@@ -213,7 +211,7 @@ def write_departments(gen_number, departments):
 
 # the C application assumes that there is a dynamic size of these, it is much simpler to directly read the
 # values instead of going line by line collecting all the unique values
-def write_metadata(gen_number):
+def write_metadata(gen_number, num_employees):
     with open(f"target/{gen_number}/metadata.csv", mode="w", newline="") as metadata_file:
         metadata_writer = csv.writer(metadata_file, delimiter=",", quotechar='"', quoting=csv.QUOTE_MINIMAL)
         metadata_writer.writerow(["type", "name"])
@@ -230,10 +228,14 @@ def write_metadata(gen_number):
         for dep_type in DepartmentType.list():
             metadata_writer.writerow(["department_type", dep_type.value])
 
+        metadata_writer.writerow(["num_employees", num_employees])
+
 
 def main():
+    num_employees = 1000
+
     departments = gen_departments()
-    employees = gen_employees()
+    employees = gen_employees(num_employees)
 
     os.makedirs("target", exist_ok=True)
 
@@ -249,7 +251,7 @@ def main():
 
     write_employees(gen_number, employees)
     write_departments(gen_number, departments)
-    write_metadata(gen_number)
+    write_metadata(gen_number, num_employees)
 
 
 readable_output_mode = 0

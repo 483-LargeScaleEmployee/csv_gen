@@ -1,0 +1,32 @@
+type,name
+sprint_day,Monday
+sprint_day,Tuesday
+sprint_day,Wednesday
+sprint_day,Thursday
+sprint_day,Friday
+sprint_day,Saturday
+sprint_day,Sunday
+sprint_day,Next Monday
+sprint_day,Next Tuesday
+sprint_day,Next Wednesday
+sprint_day,Next Thursday
+sprint_day,Next Friday
+sprint_day,Next Saturday
+sprint_day,Next Sunday
+shift,Night
+shift,Morning
+shift,Evening
+employee_type,Nurse
+employee_type,Doctor
+employee_type,Admin
+department_type,Cardiology
+department_type,Pediatrics
+department_type,Emergency
+department_type,Surgery
+department_type,Immunology
+department_type,Dermatology
+department_type,Neurology
+department_type,Psychiatry
+department_type,Gynecology
+department_type,Urology
+num_employees,1000

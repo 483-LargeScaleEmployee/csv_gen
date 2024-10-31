@@ -1,0 +1,43 @@
+Sprint Day,Shift,Nurse,Doctor,Admin
+Monday,Night,1,0,0
+Monday,Morning,0,0,0
+Monday,Evening,1,0,1
+Tuesday,Night,1,0,1
+Tuesday,Morning,1,1,0
+Tuesday,Evening,0,1,1
+Wednesday,Night,0,1,0
+Wednesday,Morning,0,0,1
+Wednesday,Evening,1,1,1
+Thursday,Night,1,0,0
+Thursday,Morning,1,1,0
+Thursday,Evening,0,1,1
+Friday,Night,0,0,1
+Friday,Morning,0,1,0
+Friday,Evening,1,1,1
+Saturday,Night,1,0,0
+Saturday,Morning,1,1,0
+Saturday,Evening,1,1,1
+Sunday,Night,1,0,1
+Sunday,Morning,0,0,1
+Sunday,Evening,1,0,0
+Next Monday,Night,0,1,1
+Next Monday,Morning,0,1,1
+Next Monday,Evening,0,0,0
+Next Tuesday,Night,0,0,1
+Next Tuesday,Morning,0,1,0
+Next Tuesday,Evening,1,1,1
+Next Wednesday,Night,0,1,1
+Next Wednesday,Morning,0,0,0
+Next Wednesday,Evening,0,0,1
+Next Thursday,Night,0,0,0
+Next Thursday,Morning,1,0,0
+Next Thursday,Evening,0,0,0
+Next Friday,Night,0,1,1
+Next Friday,Morning,0,1,0
+Next Friday,Evening,1,0,0
+Next Saturday,Night,1,0,1
+Next Saturday,Morning,0,0,1
+Next Saturday,Evening,1,1,0
+Next Sunday,Night,0,0,1
+Next Sunday,Morning,1,0,0
+Next Sunday,Evening,0,0,1
