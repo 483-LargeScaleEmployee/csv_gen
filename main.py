@@ -74,16 +74,16 @@ class Employee:
 # these are just names for readability, they have no meaning in the main application
 # specific string department names creates no dependency
 class DepartmentType(Enum):
-    CARDIOLOGY = "Cardiology"
-    PEDIATRICS = "Pediatrics"
     EMERGENCY = "Emergency"
-    SURGERY = "Surgery"
-    IMMUNOLOGY = "Immunology"
-    DERMATOLOGY = "Dermatology"
+    CARDIOLOGY = "Cardiology"
     NEUROLOGY = "Neurology"
-    PSYCHIATRY = "Psychiatry"
+    ICU = "ICU"
+    PEDIATRICS = "Pediatrics"
     GYNECOLOGY = "Gynecology"
-    UROLOGY = "Urology"
+    RADIOLOGY = "Radiology"
+    PSYCHIATRY = "Psychiatry"
+    ORTHOPEDICS = "Orthopedics"
+    ONCOLOGY = "Oncology"
 
     @classmethod
     def list(cls):
