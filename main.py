@@ -107,8 +107,8 @@ def gen_departments():
                 needs[sprintDay][shift] = {}
                 for employeeType in EmployeeType.list():
                     # for any given day at any given shift, there are a certain # of department needs
-                    # randomly generate this number as being 0-3 for each type
-                    needs[sprintDay][shift][employeeType] = random.randint(0, 1)
+                    # randomly generate this number as being 0-4 for each type
+                    needs[sprintDay][shift][employeeType] = random.randint(0, 4)
 
         departments[departmentType] = Department(departmentType, needs)
     return departments
